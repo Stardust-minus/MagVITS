@@ -454,7 +454,8 @@ class NARPredictor(nn.Module):
         self.num_head = 16
         self.position = SinePositionalEmbedding(
             512, dropout=0.1, scale=False, alpha=True)
-        self.bert_proj = nn.Linear(1024, 512)
+        sself.bert_proj = nn.Conv1d(1024, 512, 1)
+        self.bert_pre_proj = nn.Conv1d(2048, 1024, 1)
         self.x_proj = nn.Linear(192, 512)
         self.g_emb = nn.Linear(256, 512)
         
