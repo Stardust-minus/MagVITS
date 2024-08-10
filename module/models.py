@@ -49,12 +49,20 @@ class TextEncoder(nn.Module):
             kernel_size,
             p_dropout)
         self.proj = nn.Conv1d(hidden_channels, out_channels, 1)
-        self.bert_proj = nn.Linear(1024, hidden_channels)
+        self.tone_emb = nn.Embedding(num_tones, hidden_channels)
+        nn.init.normal_(self.tone_emb.weight, 0.0, hidden_channels**-0.5)
+        self.bert_proj = nn.Conv1d(1024, hidden_channels, 1)
+        self.bert_pre_proj = nn.Conv1d(2048, 1024, 1)
 
     def forward(self, x, x_lengths, bert):
         bert = self.bert_proj(bert.transpose(1,2))
         x_mask = torch.unsqueeze(commons.sequence_mask(x_lengths, x.size(-1)), 1).to(x.dtype)
-        x = (self.text_emb(x)+bert) * math.sqrt(self.hidden_channels)  # [b, t, h]
+        x = (
+            self.emb(x)
+            + self.tone_emb(tone)
+            + bert_emb
+        ) * math.sqrt(
+            self.hidden_channels
         x = torch.transpose(x, 1, -1)  # [b, h, t]
 
         x = self.encoder(x * x_mask, x_mask)
