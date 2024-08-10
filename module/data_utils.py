@@ -33,10 +33,7 @@ def f0_to_coarse(f0):
   f0_coarse = f0_coarse + ((f0_coarse >= f0_bin) * (f0_bin - 1))
   return f0_coarse
 
-
-
 """Multi speaker version"""
-
 
 class TextAudioSpeakerLoader(torch.utils.data.Dataset):
     """
@@ -208,9 +205,9 @@ class TextAudioSpeakerCollate():
 
         spec_padded = torch.FloatTensor(len(batch), batch[0][1].size(0), max_spec_len)
         wav_padded = torch.FloatTensor(len(batch), 1, max_wav_len)
-        ssl_padded = torch.FloatTensor(len(batch),768, max_spec_len)
+        ssl_padded = torch.FloatTensor(len(batch), 768, max_spec_len)
         text_padded = torch.LongTensor(len(batch),  max_text_len)
-        bert_padded = torch.FloatTensor(len(batch), 1024, max_text_len)
+        bert_padded = torch.FloatTensor(len(batch), 2048, max_text_len)
         spk_emb_padded = torch.FloatTensor(len(batch), 256)
         duration_padded = torch.LongTensor(len(batch), max_text_len)
 
