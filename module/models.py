@@ -55,7 +55,7 @@ class TextEncoder(nn.Module):
         self.bert_pre_proj = nn.Conv1d(2048, 1024, 1)
 
     def forward(self, x, x_lengths, bert):
-        bert = self.bert_proj(bert.transpose(1,2))
+        bert_emb = self.bert_proj(self.bert_pre_proj(bert)).transpose(1, 2)
         x_mask = torch.unsqueeze(commons.sequence_mask(x_lengths, x.size(-1)), 1).to(x.dtype)
         x = (
             self.emb(x)
